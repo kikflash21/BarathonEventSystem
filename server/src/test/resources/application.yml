@@ -1,0 +1,18 @@
+# sur quel port le serveur démarre
+server:
+  port: 8080
+
+# Les informations de connexion de la bd
+spring:
+  datasource:
+    embedded-database-connection: h2
+    url: "jdbc:h2:./data/test;AUTO_SERVER=TRUE"
+    username: SA
+    password: password
+    tomcat:
+      log-abandoned: false
+      log-validation-errors: true
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true

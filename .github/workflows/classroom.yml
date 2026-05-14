@@ -1,0 +1,303 @@
+name: Autograding Tests
+on:
+  repository_dispatch:
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '21'
+      - name: Copy settings maven
+        run: echo ${{ secrets.MAVEN_CD_SETTINGS }} >> settings.xml &&  mvn -U compiler:compile install -DskipTests
+
+      ## 1.1
+      - name: Mutation dans Superviseur Component
+        id: mutantSuperviseurComponent
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Superviseur Component
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses="fr.uga.miage.l3.spring.tp3.**Superviseur**" -DtargetTests="fr.uga.miage.l3.spring.tp3.**.*Superviseur*" -DmutationThreshold=80
+          timeout: 10
+          max-score: 2
+
+      ## 1.2.1
+      - name: Mutation dans Equipe 65%
+        id: mutantEquipe65
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Equipe > 65%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses="fr.uga.miage.l3.spring.tp3.**.*Equipe*" -DtargetTests="fr.uga.miage.l3.spring.tp3.**.*Equipe*" -DmutationThreshold=65
+          timeout: 10
+          max-score: 1
+      - name: Mutation dans Equipe 70%
+        id: mutantEquipe70
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Equipe > 70%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses="fr.uga.miage.l3.spring.tp3.**.*Equipe*" -DtargetTests="fr.uga.miage.l3.spring.tp3.**.*Equipe*" -DmutationThreshold=70
+          timeout: 10
+          max-score: 1
+      - name: Mutation dans Equipe 75%
+        id: mutantEquipe75
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Equipe > 75%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses="fr.uga.miage.l3.spring.tp3.**.*Equipe*" -DtargetTests="fr.uga.miage.l3.spring.tp3.**.*Equipe*" -DmutationThreshold=75
+          timeout: 10
+          max-score: 1
+      - name: Mutation dans Equipe 80%
+        id: mutantEquipe80
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Equipe > 80%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses="fr.uga.miage.l3.spring.tp3.**.*Equipe*" -DtargetTests="fr.uga.miage.l3.spring.tp3.**.*Equipe*" -DmutationThreshold=80
+          timeout: 10
+          max-score: 1
+
+      ## 1.2.2
+
+      - name: Mutation dans Epreuve 65%
+        id: mutantEpreuve65
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Epreuve > 65%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses='fr.uga.miage.l3.spring.tp3.**.*Epreuve*' -DtargetTests='fr.uga.miage.l3.spring.tp3.**.*Epreuve*' -DmutationThreshold=65
+          timeout: 10
+          max-score: 3
+      - name: Mutation dans Epreuve 70%
+        id: mutantEpreuve70
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Epreuve > 70%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses='fr.uga.miage.l3.spring.tp3.**.*Epreuve*' -DtargetTests='fr.uga.miage.l3.spring.tp3.**.*Epreuve*' -DmutationThreshold=70
+          timeout: 10
+          max-score: 3
+      - name: Mutation dans Epreuve 75%
+        id: mutantEpreuve75
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Epreuve > 75%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses='fr.uga.miage.l3.spring.tp3.**.*Epreuve*' -DtargetTests='fr.uga.miage.l3.spring.tp3.**.*Epreuve*' -DmutationThreshold=75
+          timeout: 10
+          max-score: 3
+      - name: Mutation dans Epreuve 80%
+        id: mutantEpreuve80
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Mutation dans Epreuve > 80%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses='fr.uga.miage.l3.spring.tp3.**.*Epreuve*' -DtargetTests='fr.uga.miage.l3.spring.tp3.**.*Epreuve*' -DmutationThreshold=80
+          timeout: 10
+          max-score: 3
+    # EndPoint 1
+    ## Documentation endpoint 1
+      - name: Documentation dans le endpoint ajout participant
+        id: documentationAddParticipant
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Documentation dans le endpoint ajout participant
+          command: mvn -s settings.xml surefire:test '-Dtest=TeamEndpointsTest#addParticipantOnTeamsDocumentation' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+    ## Cas fonctionnels
+      - name: Endpoint fonctionnel addParticipant cas 201
+        id: functionalTeamEndpoints201
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalTeamEndpoints201
+          command: mvn -s settings.xml surefire:test '-Dtest=TeamControllerTest#createParticipantOnTeams' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+      - name: Endpoint fonctionnel addParticipant cas 400
+        id: functionalTeamEndpoints400
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalTeamEndpoints400
+          command: mvn -s settings.xml surefire:test '-Dtest=TeamControllerTest#badRequest' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+      - name: Endpoint fonctionnel addParticipant cas 404
+        id: functionalTeamEndpoints404
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalTeamEndpoints404
+          command: mvn -s settings.xml surefire:test '-Dtest=TeamControllerTest#teamsNotExists' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+      - name: Endpoint fonctionnel addParticipant cas 409
+        id: functionalTeamEndpoints409
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalTeamEndpoints409
+          command: mvn -s settings.xml surefire:test '-Dtest=TeamControllerTest#uniqueParticipantAlreadyExist' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+      - name: Endpoint fonctionnel addParticipant cas 422
+        id: functionalTeamEndpoints422
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalTeamEndpoints422
+          command: mvn -s settings.xml surefire:test '-Dtest=TeamControllerTest#teamsIsAlreadyFull' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+    ## Mutation
+      - name: Mutation dans endpoint add participant
+        id: mutantAddParticipantEndpoint
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: endpoint add participant > 80%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses='fr.uga.miage.l3.spring.tp3.**.*Team*' -DtargetTests='fr.uga.miage.l3.spring.tp3.**.*Team*' -DmutationThreshold=80
+          timeout: 10
+          max-score: 2
+
+    # EndPoint 2
+    ## Documentation endpoint 2
+      - name: Documentation dans le endpoint delete bar
+        id: documentationDeleteBar
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Documentation dans le endpoint ajout participant
+          command: mvn -s settings.xml surefire:test '-Dtest=BarathonEndpointsTests#deleteBarOnBarathon' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+    ## cas fonctionnels
+      - name: Endpoint fonctionnel deleteBar cas 200
+        id: functionalBarathon200
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalBarathon200
+          command: mvn -s settings.xml surefire:test '-Dtest=BarathonControllerTest#deleteBarOnBarathonOk' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+
+      - name: Endpoint fonctionnel deleteBar cas 404 BarNotFound
+        id: functionalBarathon404BarNotFound
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalBarathon404BarNotFound
+          command: mvn -s settings.xml surefire:test '-Dtest=BarathonControllerTest#barNotExist' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+
+      - name: Endpoint fonctionnel deleteBar cas 404 barathonNotExist
+        id: functionalBarathon404barathonNotExist
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalBarathon404barathonNotExist
+          command: mvn -s settings.xml surefire:test '-Dtest=BarathonControllerTest#barathonNotExist' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+
+      - name: Endpoint fonctionnel deleteBar cas 422
+        id: functionalBarathon422
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalBarathon422
+          command: mvn -s settings.xml surefire:test '-Dtest=BarathonControllerTest#barHasParticipation' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+
+    ## Mutation
+      - name: Mutation dans endpoint delete bar
+        id: mutantDeleteBar
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: endpoint delete bar > 80%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses='fr.uga.miage.l3.spring.tp3.**.Bara**' -DtargetTests='fr.uga.miage.l3.spring.tp3.**.*Bara*' -DmutationThreshold=80
+          timeout: 10
+          max-score: 2
+
+    # Endpoint 3
+    ## Documentation endpoint 3
+      - name: Documentation dans le endpoint add incident
+        id: documentationAddIncident
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Documentation dans le endpoint ajout incident
+          command: mvn -s settings.xml surefire:test '-Dtest=IncidentEndpointsTest#createIncidentOnChallenge' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+    ## cas fonctionnels
+      - name: Endpoint fonctionnel addIncident cas 201
+        id: functionalAddIncident201
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalAddIncident201
+          command: mvn -s settings.xml surefire:test '-Dtest=IncidentControllerTest#createIncidentOk' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+      - name: Endpoint fonctionnel addIncident cas 404TeamsNotFound
+        id: functionalAddIncident404TeamsNotFound
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalAddIncident404TeamsNotFound
+          command: mvn -s settings.xml surefire:test '-Dtest=IncidentControllerTest#teamsNotExist' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+      - name: Endpoint fonctionnel addIncident cas 404ChallengeNotExist
+        id: functionalAddIncident404ChallengeNotExist
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalAddIncident404ChallengeNotExist
+          command: mvn -s settings.xml surefire:test '-Dtest=IncidentControllerTest#challengeNotExist' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+      - name: Endpoint fonctionnel addIncident cas 409
+        id: functionalAddIncident409
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: functionalAddIncident409
+          command: mvn -s settings.xml surefire:test '-Dtest=IncidentControllerTest#teamsNotRegisteredInChallenge' -Dsurefire.failIfNoSpecifiedTests=false
+          timeout: 10
+          max-score: 1
+
+      ## Mutation
+      - name: Mutation dans endpoint add incident
+        id: mutantAddIncident
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: endpoint add incident > 80%
+          command: mvn -s settings.xml org.pitest:pitest-maven:mutationCoverage -DtargetClasses='fr.uga.miage.l3.spring.tp3.**.Bara**' -DtargetTests='fr.uga.miage.l3.spring.tp3.**.*Bara*' -DmutationThreshold=80
+          timeout: 10
+          max-score: 2
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          MUTANTSUPERVISEURCOMPONENT_RESULTS: "${{steps.mutantSuperviseurComponent.outputs.result}}"
+          MUTANTEQUIPE65_RESULTS: "${{steps.mutantEquipe65.outputs.result}}"
+          MUTANTEQUIPE70_RESULTS: "${{steps.mutantEquipe70.outputs.result}}"
+          MUTANTEQUIPE75_RESULTS: "${{steps.mutantEquipe75.outputs.result}}"
+          MUTANTEQUIPE80_RESULTS: "${{steps.mutantEquipe80.outputs.result}}"
+          MUTANTEPREUVE65_RESULTS: "${{steps.mutantEpreuve65.outputs.result}}"
+          MUTANTEPREUVE70_RESULTS: "${{steps.mutantEpreuve70.outputs.result}}"
+          MUTANTEPREUVE75_RESULTS: "${{steps.mutantEpreuve75.outputs.result}}"
+          MUTANTEPREUVE80_RESULTS: "${{steps.mutantEpreuve80.outputs.result}}"
+          DOCUMENTATIONADDPARTICIPANT_RESULTS: "${{steps.documentationAddParticipant.outputs.result}}"
+          FUNCTIONALTEAMENDPOINTS201_RESULTS: "${{steps.functionalTeamEndpoints201.outputs.result}}"
+          FUNCTIONALTEAMENDPOINTS400_RESULTS: "${{steps.functionalTeamEndpoints400.outputs.result}}"
+          FUNCTIONALTEAMENDPOINTS404_RESULTS: "${{steps.functionalTeamEndpoints404.outputs.result}}"
+          FUNCTIONALTEAMENDPOINTS409_RESULTS: "${{steps.functionalTeamEndpoints409.outputs.result}}"
+          FUNCTIONALTEAMENDPOINTS422_RESULTS: "${{steps.functionalTeamEndpoints422.outputs.result}}"
+          MUTANTADDPARTICIPANTENDPOINT_RESULTS: "${{steps.mutantAddParticipantEndpoint.outputs.result}}"
+          DOCUMENTATIONDELETEBAR_RESULTS: "${{steps.documentationDeleteBar.outputs.result}}"
+          FUNCTIONALBARATHON200_RESULTS: "${{steps.functionalBarathon200.outputs.result}}"
+          FUNCTIONALBARATHON404BARNOTFOUND_RESULTS: "${{steps.functionalBarathon404BarNotFound.outputs.result}}"
+          FUNCTIONALBARATHON404BARATHONNOTEXIST_RESULTS: "${{steps.functionalBarathon404barathonNotExist.outputs.result}}"
+          FUNCTIONALBARATHON422_RESULTS: "${{steps.functionalBarathon422.outputs.result}}"
+          MUTANTDELETEBAR_RESULTS: "${{steps.mutantDeleteBar.outputs.result}}"
+          DOCUMENTATIONADDINCIDENT_RESULTS: "${{steps.documentationAddIncident.outputs.result}}"
+          FUNCTIONALADDINCIDENT201_RESULTS: "${{steps.functionalAddIncident201.outputs.result}}"
+          FUNCTIONALADDINCIDENT404TEAMSNOTFOUND_RESULTS: "${{steps.functionalAddIncident404TeamsNotFound.outputs.result}}"
+          FUNCTIONALADDINCIDENT404CHALLENGENOTEXIST_RESULTS: "${{steps.functionalAddIncident404ChallengeNotExist.outputs.result}}"
+          FUNCTIONALADDINCIDENT409_RESULTS: "${{steps.functionalAddIncident409.outputs.result}}"
+          MUTANTADDINCIDENT_RESULTS: "${{steps.mutantAddIncident.outputs.result}}"
+        with:
+          runners: 'mutantSuperviseurComponent,mutantEquipe65,mutantEquipe70,mutantEquipe75,mutantEquipe80,mutantEpreuve65,mutantEpreuve70,mutantEpreuve75,mutantEpreuve80,documentationAddParticipant,functionalTeamEndpoints201,functionalTeamEndpoints400,functionalTeamEndpoints404,functionalTeamEndpoints409,functionalTeamEndpoints422,mutantAddParticipantEndpoint,documentationDeleteBar,functionalBarathon200,functionalBarathon404BarNotFound,functionalBarathon404barathonNotExist,functionalBarathon422,mutantDeleteBar,documentationAddIncident,functionalAddIncident201,functionalAddIncident404TeamsNotFound,functionalAddIncident404ChallengeNotExist,functionalAddIncident409,mutantAddIncident'
