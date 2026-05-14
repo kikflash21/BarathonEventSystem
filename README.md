@@ -1,4 +1,4 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/7dnCwqkd)
+
 # <u>L3 Miage - VA - TP3 - <b style="color:red">noté</b></u>
 
 * Dans ce TP vous avez une base de données H2. Pour ce connecter je vous laisse réferer au mode d'emploi dans les
@@ -218,3 +218,4 @@ Documenter, implémenter et tester au plus possible ces endpoints :
 ---
 
 # <div style="text-align: center;">Fin de tp</div>
+
