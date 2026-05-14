@@ -4,7 +4,7 @@
 
 ## 👥 À propos
 
-Projet réalisé par **4 étudiants** en L3 MIAGE. Application backend robuste avec Spring Boot pour orchestrer une compétition ludique multi-équipes dans un réseau de bars partenaires.
+Projet réalisé par **2 étudiants** en L3 MIAGE. Application backend robuste avec Spring Boot pour orchestrer une compétition ludique multi-équipes dans un réseau de bars partenaires.
 
 ---
 
